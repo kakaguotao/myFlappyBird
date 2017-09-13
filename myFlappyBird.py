@@ -81,6 +81,19 @@ while True:
             elif event.key==K_UP and not if_start:
                 start_time=time.time()
                 if_start=True
+            elif event.key==K_RIGHT and if_conflict:
+                block_list=[]
+                block_list=add_block(block_list,block_hole_size)
+                score=0
+                bird_vel=0
+                bird_acc=700
+                bird_pos=239
+                if_conflict=False
+                start_time=time.time()
+                last_frame_time=0
+                last_press_time=-0.2
+
+
     screen.fill((0,0,0))
     if not if_conflict:
         if if_start:
@@ -102,10 +115,12 @@ while True:
 
     #draw block
     for block in block_list:
+        #update score
         if (block[0]-bird_x_pos)<-(block_width/2) and block[2] is True:
             score+=1
             block[2]=False
 
+        #conflict detect
         if bird_x_pos-block[0]>0 and bird_x_pos-block[0]<block_width:
             if bird_pos+bird_r>=block[1]+block_hole_size or bird_pos-bird_r<=block[1]:
                 if_conflict=True
@@ -123,5 +138,6 @@ while True:
     if if_conflict:
         screen.blit(over_font.render('Score: %d'%(score), True,(255,0,0)),(90,140))
         screen.blit(over_font.render('GAME OVER', True,(255,0,0)),(90,220))
+        screen.blit(font.render('PRESS RIGHT TO RESTART!', True,(0,255,0)),(60,300))
 
     pygame.display.update()
